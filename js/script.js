@@ -16,7 +16,7 @@ class ToDo {
         localStorage.setItem('toDolist', JSON.stringify(this.list));
     }
 
-    addListItem() {
+    addAndDisplayListItem() {
         let ul = document.querySelector('ul');
         ul.innerHTML = '';
 
@@ -52,22 +52,22 @@ class ToDo {
     } 
 
     start() {
-        if(this.list.length) this.addListItem();
+        if(this.list.length) this.addAndDisplayListItem();
         this.addBtn.addEventListener('click', () => {
             const {value} = this.input;
             let savedItems = JSON.parse(localStorage.getItem('savedItems')) || [];
             const toDoItem = {id: this.list.length + 1, text: value, checked: false};   
             const checkValue = (value) => {
                 if(!value.length) {
-                    msg.innerText = 'Enter your deal';
+                    this.msg.innerText = 'Enter your deal';
                 }
                 else if(savedItems.includes(value)) {
-                    msg.innerText = 'This deal has already added';
+                    this.msg.innerText = 'This deal has already added';
                 }
                 else {
-                    msg.innerText = '';
+                    this.msg.innerText = '';
                     this.addToDo(toDoItem);
-                    this.addListItem();
+                    this.addAndDisplayListItem();
                     this.input.value = '';
                     savedItems.push(value);
                     localStorage.setItem('savedItems', JSON.stringify(savedItems));
