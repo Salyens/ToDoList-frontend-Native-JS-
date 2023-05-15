@@ -26,10 +26,29 @@ class ToDo {
         }            
   
         function addLi(value) {
-            let ul = document.querySelector('ul');
-            let li = `<li><div class="edit-delete"><span class="edit-icon"><i class="fa fa-edit"></i></span><span class="delete-icon"><i class="fa fa-trash-o"></i></span></div><input class="to-do-text" value="${value}"><div class="done"><i class="fa fa-check-circle"></i></div></li></ul>`
-            ul.insertAdjacentHTML('beforeend', li);   
-        }
+            const ul = document.querySelector('ul');
+            const li = document.createElement('li');
+            const editDeleteDiv = document.createElement('div');
+            const editSpan = document.createElement('span');
+            const deleteSpan = document.createElement('span');
+            const input = document.createElement('input');
+            const doneDiv = document.createElement('div');
+            editDeleteDiv.className = 'edit-delete';
+            editSpan.className = 'edit-icon';
+            deleteSpan.className = 'delete-icon';
+            editSpan.innerHTML = '<i class="fa fa-edit">';
+            deleteSpan.innerHTML = '<i class="fa fa-trash-o"></i>';
+            editDeleteDiv.append(editSpan);
+            editDeleteDiv.append(deleteSpan);
+            li.append(editDeleteDiv);
+            ul.append(li);
+            input.className = 'to-do-text';
+            input.value = value;
+            li.append(input);
+            doneDiv.className = 'done';
+            doneDiv.innerHTML = '<i class="fa fa-check-circle"></i>';
+            li.append(doneDiv);
+        }     
     } 
 
     start() {
@@ -46,6 +65,7 @@ class ToDo {
                     msg.innerText = 'This deal has already added';
                 }
                 else {
+                    msg.innerText = '';
                     this.addToDo(toDoItem);
                     this.addListItem();
                     this.input.value = '';
