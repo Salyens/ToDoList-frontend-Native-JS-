@@ -1,7 +1,7 @@
 'use strict';
 class ToDo {
     list = JSON.parse(localStorage.getItem('toDolist')) || [];
-
+  
     constructor(buttons) {
         const {input, addBtn, editBtn, deleteBtn, checkBtn, msg} = buttons;
         this.input = document.querySelector(input);
@@ -55,11 +55,36 @@ class ToDo {
     addAndDisplayListItem() {
         let ul = document.querySelector('ul');
         ul.innerHTML = '';
+
         for (let i = 0; i < this.list.length; i++) {
             let value = this.list[i].text;
-            let id = this.list[i].id
-            this.addLi(value, id);
-        } 
+            addLi(value);
+        }            
+  
+        function addLi(value) {
+            const ul = document.querySelector('ul');
+            const li = document.createElement('li');
+            const editDeleteDiv = document.createElement('div');
+            const editSpan = document.createElement('span');
+            const deleteSpan = document.createElement('span');
+            const input = document.createElement('input');
+            const doneDiv = document.createElement('div');
+            editDeleteDiv.className = 'edit-delete';
+            editSpan.className = 'edit-icon';
+            deleteSpan.className = 'delete-icon';
+            editSpan.innerHTML = '<i class="fa fa-edit">';
+            deleteSpan.innerHTML = '<i class="fa fa-trash-o"></i>';
+            editDeleteDiv.append(editSpan);
+            editDeleteDiv.append(deleteSpan);
+            li.append(editDeleteDiv);
+            ul.append(li);
+            input.className = 'to-do-text';
+            input.value = value;
+            li.append(input);
+            doneDiv.className = 'done';
+            doneDiv.innerHTML = '<i class="fa fa-check-circle"></i>';
+            li.append(doneDiv);
+        }     
     } 
 
     start() {
@@ -76,6 +101,15 @@ class ToDo {
                 }
                 if(!value.length) {
                     this.msg.innerText = 'Enter your deal';
+                }
+
+            const toDoItem = {id: this.list.length + 1, text: value, checked: false};   
+            const checkValue = (value) => {
+                if(!value.length) {
+                    this.msg.innerText = 'Enter your deal';
+                }
+                else if(savedItems.includes(value)) {
+                    this.msg.innerText = 'This deal has already added';
                 }
                 else {
                     this.msg.innerText = '';
@@ -99,7 +133,11 @@ const buttons = {
 const toDo = new ToDo(buttons);
 toDo.start();
 
+
 //Отобразить список введенных дел, проверка на пустое и повтор и вывод ошибки в отдельном диве, оформить pull request 
 
 // написать удаление, почитать про Git stash / Git stash pop
+
+
+//Отобразить список введенных дел, проверка на пустое и повтор и вывод ошибки в отдельном диве, оформить pull request 
 
