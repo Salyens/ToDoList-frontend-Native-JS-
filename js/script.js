@@ -99,6 +99,4 @@ const buttons = {
 const toDo = new ToDo(buttons);
 toDo.start();
 
-//Отобразить список введенных дел, проверка на пустое и повтор и вывод ошибки в отдельном диве, оформить pull request 
-
 
