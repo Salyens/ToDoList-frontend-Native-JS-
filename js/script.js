@@ -98,5 +98,3 @@ const buttons = {
 };
 const toDo = new ToDo(buttons);
 toDo.start();
-
-
