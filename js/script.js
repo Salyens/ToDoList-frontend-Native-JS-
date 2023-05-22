@@ -14,10 +14,14 @@ class ToDo {
 
     addToDo(toDoItem) {
         this.list.push(toDoItem);
+        this.list.sort((a, b) => a.checked > b.checked ? 1 : -1)
+        console.log(this.list);
+
         localStorage.setItem('toDolist', JSON.stringify(this.list));
     }
 
-     addLi(value, id) {
+
+     addLi(value, id, checked) {
         const ul = document.querySelector('ul');
         const li = document.createElement('li');
         const editDeleteDiv = document.createElement('div');
@@ -28,7 +32,7 @@ class ToDo {
         editDeleteDiv.className = 'edit-delete';
         editSpan.className = 'edit-icon';
         deleteSpan.className = 'delete-icon';
-        deleteSpan.setAttribute('data-id', id);
+        li.setAttribute('data-id', id);
         editSpan.innerHTML = '<i class="fa fa-edit">';
         deleteSpan.innerHTML = '<i class="fa fa-trash-o"></i>';
         editDeleteDiv.append(editSpan);
@@ -42,11 +46,23 @@ class ToDo {
         doneDiv.innerHTML = '<i class="fa fa-check-circle"></i>';
         li.append(doneDiv);
 
+        if(checked) input.classList.add('line-through');
 
         deleteSpan.addEventListener('click', (event) => {
-            const index = +event.target.parentElement.getAttribute('data-id');
-            const newList = this.list.filter((item) => item.id !== index);
+            const index = event.target.parentElement.parentElement.parentElement.getAttribute('data-id');
+            console.log(event.target.parentElement.parentElement.parentElement);
+            const newList = this.list.filter((item) => item.id != index);
             this.list = newList;
+            this.addAndDisplayListItem();
+            localStorage.setItem('toDolist', JSON.stringify(this.list));
+        });
+
+
+        doneDiv.addEventListener('click', (event) => {
+            const index = event.target.parentElement.parentElement.getAttribute('data-id');
+            event.target.parentElement.parentElement.querySelector('input').classList.add('line-through');
+            const findToDoItem = this.list.find(item => item.id == index);
+            findToDoItem.checked = true;
             this.addAndDisplayListItem();
             localStorage.setItem('toDolist', JSON.stringify(this.list));
         })
@@ -55,10 +71,12 @@ class ToDo {
     addAndDisplayListItem() {
         let ul = document.querySelector('ul');
         ul.innerHTML = '';
+        this.list.sort((a, b) => a.checked > b.checked ? 1 : -1);
         for (let i = 0; i < this.list.length; i++) {
             let value = this.list[i].text;
             let id = this.list[i].id
-            this.addLi(value, id);
+            let checked = this.list[i].checked;
+            this.addLi(value, id, checked);
         } 
     } 
 
@@ -98,3 +116,7 @@ const buttons = {
 };
 const toDo = new ToDo(buttons);
 toDo.start();
+
+//написать функционал который зачеркивает сделанные дела и перемещает li в конец списка
+
+
