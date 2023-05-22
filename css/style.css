@@ -105,3 +105,7 @@
 .to-do-done {
   text-decoration: line-through;
 }
+
+.line-through {
+    text-decoration:line-through;
+}
