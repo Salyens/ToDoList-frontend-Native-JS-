@@ -3,12 +3,9 @@ class ToDo {
   list = JSON.parse(localStorage.getItem("toDolist")) || [];
   editId = null;
   constructor(buttons) {
-    const { input, addBtn, editBtn, deleteBtn, checkBtn, msg } = buttons;
+    const { input, addBtn, msg } = buttons;
     this.input = document.querySelector(input);
     this.addBtn = document.querySelector(addBtn);
-    this.editBtn = document.querySelectorAll(editBtn);
-    this.deleteBtn = document.querySelectorAll(deleteBtn);
-    this.checkBtn = document.querySelectorAll(checkBtn);
     this.msg = document.querySelector(msg);
   }
 
@@ -34,7 +31,7 @@ class ToDo {
       editSpan.className = "edit-icon";
       deleteSpan.className = "delete-icon";
       li.setAttribute("data-id", id);
-      editSpan.innerHTML = '<i class="fa fa-file-text-o"></i>';
+      editSpan.innerHTML = '<i class="fa fa-edit"></i>';
       deleteSpan.innerHTML = '<i class="fa fa-trash-o"></i>';
       editDeleteDiv.append(editSpan);
       editDeleteDiv.append(deleteSpan);
@@ -53,8 +50,7 @@ class ToDo {
     createLiHTML();
 
     deleteSpan.addEventListener("click", (event) => {
-      if (Boolean(this.editId))
-        this.msg.innerText = "Complete changing your task";
+      if (this.editId) this.msg.innerText = "Complete changing your task";
       else {
         const index =
           event.target.parentElement.parentElement.parentElement.getAttribute(
@@ -69,8 +65,7 @@ class ToDo {
     });
 
     doneDiv.addEventListener("click", (event) => {
-      if (Boolean(this.editId))
-        this.msg.innerText = "Complete changing your task";
+      if (this.editId) this.msg.innerText = "Complete changing your task";
       else {
         const index =
           event.target.parentElement.parentElement.getAttribute("data-id");
@@ -82,35 +77,26 @@ class ToDo {
       }
     });
 
-    // if(!Boolean(this.editId) || this.editId === id) {
-    //     console.log(id);
-    //     editSpan.addEventListener('click', (event) => {
-    //         this.edit = !this.edit;
-    //         if(!this.edit) {
-    //             this.editId = null;
-    //             editSpan.innerHTML = '<i class="fa fa-edit"></i>';
-    //         }
-    //         else {
-    //             editSpan.innerHTML = '<i class="fa fa-calendar-check-o"></i>';
-    //             this.editId = id;
-    //         }
-    //     })
-    // }
-
     editSpan.addEventListener("click", (event) => {
-      let idLi = event.target.parentElement.parentElement.parentElement.getAttribute("data-id");
-      let input = event.target.parentElement.parentElement.parentElement.querySelector("input");
-      let checkDoneTaskValue = true;
+      const idLi =
+        event.target.parentElement.parentElement.parentElement.getAttribute(
+          "data-id"
+        );
+      const input =
+        event.target.parentElement.parentElement.parentElement.querySelector(
+          "input"
+        );
+      let checkDoneTaskValue = false;
 
-      const firstClickOnEdit = () => {
-        editSpan.innerHTML = '<i class="fa fa-edit">';
+      const clickEdit = () => {
+        editSpan.innerHTML = '<i class="fa fa-save"></i>';
         this.editId = id;
         input.disabled = false;
       };
 
-      const secondClickOnEdit = () => {
+      const clickSave = () => {
         this.msg.innerText = "";
-        editSpan.innerHTML = '<i class="fa fa-file-text-o"></i>';
+        editSpan.innerHTML = '<i class="fa fa-edit"></i>';
         this.editId = null;
         input.disabled = true;
       };
@@ -119,22 +105,23 @@ class ToDo {
         for (const el of this.list) {
           if (el.id == idLi && el.checked) {
             this.msg.innerText = "This task has been already DONE";
-            checkDoneTaskValue = false;
+            checkDoneTaskValue = true;
             return;
           }
         }
       };
       checkDoneTask();
-      if (!checkDoneTaskValue) return;
+      if (checkDoneTaskValue) return;
 
-      if (this.editId === null) firstClickOnEdit();
+      if (!this.editId) clickEdit();
       else if (this.editId == idLi) {
-        secondClickOnEdit();
+        clickSave();
         const checkAndChangeInputText = () => {
           for (const el of this.list) {
             if (el.text === input.value && el.id != idLi) {
               this.msg.innerText = "This task has been already ADDED";
-              firstClickOnEdit();
+              clickEdit();
+              this.listenInput(input);
               return;
             } else if (el.text !== input.value && el.id == idLi) {
               this.msg.innerText = "";
@@ -149,32 +136,29 @@ class ToDo {
   }
 
   addAndDisplayListItem() {
-    let ul = document.querySelector("ul");
+    const ul = document.querySelector("ul");
     ul.innerHTML = "";
 
     this.list.sort((a, b) => a.id - b.id);
     this.list.sort((a, b) => a.checked - b.checked);
     for (let i = 0; i < this.list.length; i++) {
-      let value = this.list[i].text;
-      let id = this.list[i].id;
-      let checked = this.list[i].checked;
+      const value = this.list[i].text;
+      const id = this.list[i].id;
+      const checked = this.list[i].checked;
       this.addLi(value, id, checked);
     }
   }
 
-  listenInput() {
-    this.input.addEventListener("input", (event) => {
-      const { value } = event.target;
-      if (!value) this.msg.innerText = "";
+  listenInput(input) {
+    input.addEventListener("input", () => {
+      this.msg.innerText = "";
     });
   }
 
   start() {
-    this.listenInput();
     if (this.list.length) this.addAndDisplayListItem();
     this.addBtn.addEventListener("click", () => {
-      if (Boolean(this.editId))
-        this.msg.innerText = "Complete changing your task";
+      if (this.editId) this.msg.innerText = "Complete changing your task";
       else {
         const { value } = this.input;
         const toDoItem = {
@@ -186,13 +170,12 @@ class ToDo {
           for (const el of this.list) {
             if (el.text === value) {
               this.msg.innerText = "This task has been already ADDED";
+              this.listenInput(this.input);
               return;
             }
           }
-
-          if (!value.length) {
-            this.msg.innerText = "Enter your task";
-          } else {
+          if (!value.length) this.msg.innerText = "Enter your task";
+          else {
             this.msg.innerText = "";
             this.addToDo(toDoItem);
             this.addAndDisplayListItem();
@@ -207,14 +190,7 @@ class ToDo {
 const buttons = {
   input: "#to-do-input",
   addBtn: "#to-do-add",
-  editBtn: ".edit-icon",
-  deleteBtn: ".delete-icon",
-  checkBtn: ".done",
   msg: "#msg",
 };
 const toDo = new ToDo(buttons);
 toDo.start();
-
-//написать функционал который зачеркивает сделанные дела и перемещает li в конец списка
-
-// дописать функционал редактирования
