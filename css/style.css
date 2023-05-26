@@ -54,6 +54,7 @@
     margin-top: 10px;
     padding-bottom: 10px;
     display: flex;
+    justify-content: space-between;
 }
 
 .to-do-text {
@@ -76,16 +77,18 @@
 
 .edit-delete {
     flex-basis: 15%;
+    display: flex;
 }
 
 .edit-delete span, .done span {
     margin-left: 5px;
     margin-right: 5px;
+    width: 25px;
 }
 
 .done {
     text-align: right;
-    flex-basis: 15%;
+    display: flex;
 }
 
 .edit-delete, .done {
