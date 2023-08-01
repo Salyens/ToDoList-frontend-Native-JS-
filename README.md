@@ -3,4 +3,4 @@
 - CSS
 - JS
 
-You can view [GitHub Pages](https://salyens.github.io/To-Do-List/).
+You can view [GitHub Pages](https://salyens.github.io/ToDoList-frontend/)
